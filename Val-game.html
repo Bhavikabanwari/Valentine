@@ -1,0 +1,126 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>💖 Valentine Game 💖</title>
+<style>
+  body {
+    font-family: sans-serif;
+    text-align: center;
+    background: pink;
+    margin: 0;
+    padding: 0;
+    overflow: hidden;
+  }
+  h1 { margin-top: 2rem; }
+  #gameArea {
+    position: relative;
+    width: 100%;
+    height: 60vh;
+    border: 2px dashed white;
+    margin: 2rem 0;
+    border-radius: 20px;
+    background: #ffb6c1;
+    overflow: hidden;
+  }
+  .heart {
+    position: absolute;
+    font-size: 3rem;
+    cursor: pointer;
+  }
+  #score { font-weight: bold; }
+  button { font-size: 1.2rem; padding: 1rem 2rem; border: none; border-radius: 12px; cursor: pointer; margin-top: 1rem; }
+  /* Popup styles */
+  #popup {
+    position: fixed;
+    top: 50%; left: 50%;
+    transform: translate(-50%, -50%);
+    background: white;
+    color: black;
+    border-radius: 20px;
+    padding: 2rem;
+    text-align: center;
+    display: none;
+    box-shadow: 0 0 20px rgba(0,0,0,0.5);
+  }
+  #popup button { margin: 1rem; padding: 1rem 2rem; font-size: 1.2rem; border-radius: 12px; cursor: pointer; }
+</style>
+</head>
+<body>
+
+<h1>💖 Heart Tap Game 💖</h1>
+<p>Tap hearts as many times as you can in 10 seconds!</p>
+<p>Score: <span id="score">0</span></p>
+<div id="gameArea"></div>
+<button onclick="startGame()">Start Game</button>
+
+<!-- Popup -->
+<div id="popup">
+  <p style="font-size:1.5rem">Will you be my Valentine?</p>
+  <button id="yesBtn">Yes</button>
+  <button id="noBtn">No</button>
+</div>
+
+<script>
+let score = 0;
+let gameInterval;
+
+function startGame() {
+  score = 0;
+  document.getElementById('score').textContent = score;
+  const gameArea = document.getElementById('gameArea');
+  gameArea.innerHTML = '';
+  
+  const endTime = Date.now() + 10000; // 10 seconds
+
+  gameInterval = setInterval(() => {
+    if(Date.now() > endTime) {
+      clearInterval(gameInterval);
+      // Game ends, show popup
+      document.getElementById('popup').style.display = 'block';
+      return;
+    }
+
+    // Create a heart
+    const heart = document.createElement('div');
+    heart.classList.add('heart');
+    heart.textContent = '💖';
+    heart.style.top = Math.random()*(gameArea.clientHeight-50)+'px';
+    heart.style.left = Math.random()*(gameArea.clientWidth-50)+'px';
+
+    heart.onclick = () => {
+      score++;
+      document.getElementById('score').textContent = score;
+      heart.remove();
+    }
+
+    gameArea.appendChild(heart);
+
+    // Remove heart after 1.5 sec if not clicked
+    setTimeout(()=>heart.remove(), 1500);
+  }, 500);
+}
+
+// Popup buttons
+const yesBtn = document.getElementById('yesBtn');
+const noBtn = document.getElementById('noBtn');
+const popup = document.getElementById('popup');
+
+// Yes click
+yesBtn.addEventListener('click', () => {
+  popup.innerHTML = "<h2>Right answer! ❤️</h2><p>Happy Valentine's Day, Hershey Kaul!</p>";
+});
+
+// No hover trick
+noBtn.addEventListener('mouseenter', () => {
+  const popupRect = popup.getBoundingClientRect();
+  const maxX = popupRect.width - noBtn.offsetWidth;
+  const maxY = popupRect.height - noBtn.offsetHeight;
+  noBtn.style.position = 'absolute';
+  noBtn.style.left = Math.random() * maxX + 'px';
+  noBtn.style.top = Math.random() * maxY + 'px';
+});
+</script>
+</body>
+</html>
